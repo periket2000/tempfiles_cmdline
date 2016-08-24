@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import tempfiles_cmdline
-import sys, getopt
+from tempfiles_cmdline import utils
+import sys
 
-print("Hola marco")
+executor = utils.Executor()
+executor.run(sys.argv[1:])
