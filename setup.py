@@ -21,7 +21,9 @@ CLASSIFIERS = [
     #"Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: Implementation :: PyPy"
 ]
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = [
+    'requests>=2.11.1'
+]
 
 ###################################################################
 
