@@ -4,3 +4,5 @@
 *.DS_Store
 *.idea
 *.cache
+build
+dist
