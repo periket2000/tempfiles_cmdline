@@ -7,10 +7,10 @@ from setuptools import setup, find_packages
 
 ###################################################################
 
-NAME = "tempfiles-cmdline"
+NAME = "tempfiles_cmdline"
 PACKAGES = find_packages(where="src")
-META_PATH = os.path.join("src", "tempfiles-cmdline", "__init__.py")
-KEYWORDS = ["class", "attribute", "boilerplate"]
+META_PATH = os.path.join("src", "tempfiles_cmdline", "__init__.py")
+KEYWORDS = ["ephemeral file sharing", "anonymous file sharing", "devops", "sysadmin"]
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -18,7 +18,7 @@ CLASSIFIERS = [
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.5",
+    #"Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: Implementation :: PyPy"
 ]
 INSTALL_REQUIRES = []
