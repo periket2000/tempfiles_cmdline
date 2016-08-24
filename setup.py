@@ -71,4 +71,5 @@ if __name__ == "__main__":
         zip_safe=False,
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
+        scripts=['bin/tempfiles'],
     )
