@@ -10,7 +10,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__version__ = "1.0.8"
+__version__ = "1.0.9"
 __description__ = "Tempfil.es ephemeral/anonymous file sharing service command line tool"
 __license__ = "Apache License, Version 2.0"
 __uri__ = "https://tempfil.es"

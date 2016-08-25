@@ -24,12 +24,12 @@ class Executor:
         if not options.upload and not options.download:
             print('No mode selected!')
             self.parser.print_usage()
-            return;
+            return
 
         if options.upload and len(args) < 2:
             print('No file to upload given!')
             self.parser.print_usage()
-            return;
+            return
         elif options.upload:
             filepath = args[1]
             if os.path.isfile(filepath):
@@ -37,6 +37,7 @@ class Executor:
                 self.upload_file(filepath)
             else:
                 print('File "{0}" not found!'.format(filepath))
+            return
 
         if options.download and len(args) < 2:
             print('No link to download given!')
