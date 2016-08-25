@@ -3,12 +3,12 @@ import os.path
 import requests
 import json
 import sys
+import tempfiles_conf.configuration as configuration
 
 usage = """
-
 \twhere options are:
 \t\t -u file_path => upload mode
-\t\t -d download_link [destination_path] => download mode
+\t\t -d download_link [destination_file_path] => download mode
 """
 
 
@@ -17,30 +17,31 @@ class Executor:
         self.parser = optparse.OptionParser(usage='usage: %prog [options]'+usage)
         self.parser.add_option('-u', '--upload', action='store_true', default=False, help='upload mode')
         self.parser.add_option('-d', '--download', action='store_true', default=False, help='download mode')
-        self.up_url = "https://tempfil.es/fileupload/"
+        self.configuration_service = configuration.ConfigurationService()
+        self.up_url = self.configuration_service.get('UPLOAD_URL')
 
     def run(self, args):
         (options, arguments) = self.parser.parse_args(args)
         if not options.upload and not options.download:
-            print('No mode selected!')
+            self.configuration_service.log('NO_MODE')
             self.parser.print_usage()
             return
 
         if options.upload and len(args) < 2:
-            print('No file to upload given!')
+            self.configuration_service.log('NO_FILE_GIVEN')
             self.parser.print_usage()
             return
         elif options.upload:
             filepath = args[1]
             if os.path.isfile(filepath):
-                print('Uploading "{0}" to https://tempfil.es'.format(filepath))
+                self.configuration_service.log('UPLOADING', (filepath,))
                 self.upload_file(filepath)
             else:
-                print('File "{0}" not found!'.format(filepath))
+                self.configuration_service.log('FILE_NOT_FOUND', (filepath,))
             return
 
         if options.download and len(args) < 2:
-            print('No link to download given!')
+            self.configuration_service.log('NO_DOWNLOAD_LINK')
             self.parser.print_usage()
             return
 
@@ -59,7 +60,7 @@ class Executor:
                 self.download_file(download_link, destination_path)
                 return
             else:
-                print('Invalid destination path given!')
+                self.configuration_service.log('INVALID_DESTINATION')
 
     def upload_file(self, filepath):
         files = {"filedata": open(filepath, "rb")}
@@ -67,7 +68,7 @@ class Executor:
             r = requests.post(self.up_url, files=files)
             print(json.loads(r.text))
         except requests.exceptions.ConnectionError:
-            print('Server closed the connection, maybe the file is too large or the network speed too slow')
+            self.configuration_service.log('CONNECTION_CLOSED')
 
     def download_file(self, link, destination=None, is_directory=False):
         try:
@@ -84,18 +85,18 @@ class Executor:
 
                 option = 'y'
                 if os.path.isfile(destination_file):
-                    option = input('File "{0}" exists, overwrite? (y/n): '.format(destination_file))
+                    option = input(self.configuration_service.get('OVERWRITE').format(destination_file))
                 if option == 'y':
                     with open(destination_file, 'wb') as handle:
                         for block in response.iter_content(1024):
                             handle.write(block)
-                    print('Download of "{0}" complete!'.format(destination_file))
+                    self.configuration_service.log('COMPLETE', (destination_file,))
             else:
-                print('File not found!')
+                self.configuration_service.log('NOT_FOUND')
         except requests.exceptions.MissingSchema:
-            print('Bad url provided!')
+            self.configuration_service.log('BAD_URL')
         except requests.exceptions.ConnectionError:
-            print('Failed to establish a connection with the server!')
+            self.configuration_service.log('SERVER_KO')
         except:
-            print('Unexpected error:', sys.exc_info()[0])
+            print(self.configuration_service.get('ALIEN'), sys.exc_info()[0])
             raise
