@@ -4,6 +4,8 @@ import requests
 import json
 import sys
 import tempfiles_conf.configuration as configuration
+from clint.textui.progress import Bar as ProgressBar
+from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
 
 usage = """
 \twhere options are:
@@ -63,9 +65,12 @@ class Executor:
                 self.configuration_service.log('INVALID_DESTINATION')
 
     def upload_file(self, filepath):
-        files = {"filedata": open(filepath, "rb")}
         try:
-            r = requests.post(self.up_url, files=files)
+            encoder = self.create_upload(filepath)
+            callback = self.create_callback(encoder)
+            monitor = MultipartEncoderMonitor(encoder, callback)
+            r = requests.post(self.up_url, data=monitor, headers={'Content-Type': monitor.content_type})
+            print()
             print(json.loads(r.text))
         except requests.exceptions.ConnectionError:
             self.configuration_service.log('CONNECTION_CLOSED')
@@ -87,9 +92,13 @@ class Executor:
                 if os.path.isfile(destination_file):
                     option = input(self.configuration_service.get('OVERWRITE').format(destination_file))
                 if option == 'y':
+                    total_length = int(response.headers.get('content-length'))
+                    dl = 0
                     with open(destination_file, 'wb') as handle:
                         for block in response.iter_content(1024):
                             handle.write(block)
+                            dl = self._progress(dl, block, total_length)
+                    print()
                     self.configuration_service.log('COMPLETE', (destination_file,))
             else:
                 self.configuration_service.log('NOT_FOUND')
@@ -100,3 +109,26 @@ class Executor:
         except:
             print(self.configuration_service.get('ALIEN'), sys.exc_info()[0])
             raise
+
+    @staticmethod
+    def _progress(dl, block, total_length):
+        dl += len(block)
+        bar = ProgressBar(expected_size=total_length, filled_char='=')
+        bar.show(dl)
+        return dl
+
+    @staticmethod
+    def create_callback(encoder):
+        encoder_len = encoder.len
+        bar = ProgressBar(expected_size=encoder_len, filled_char='=')
+
+        def callback(monitor):
+            bar.show(monitor.bytes_read)
+
+        return callback
+
+    @staticmethod
+    def create_upload(filepath):
+        return MultipartEncoder({
+            'file': (os.path.basename(filepath), open(filepath, 'rb'), 'text/plain')
+            })
