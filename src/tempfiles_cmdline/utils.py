@@ -110,17 +110,15 @@ class Executor:
             print(self.configuration_service.get('ALIEN'), sys.exc_info()[0])
             raise
 
-    @staticmethod
-    def _progress(dl, block, total_length):
+    def _progress(self, dl, block, total_length):
         dl += len(block)
-        bar = ProgressBar(expected_size=total_length, filled_char='=')
+        bar = ProgressBar(expected_size=total_length, filled_char=self.configuration_service.get('PROGRESS_FILING_CHAR'))
         bar.show(dl)
         return dl
 
-    @staticmethod
-    def create_callback(encoder):
+    def create_callback(self, encoder):
         encoder_len = encoder.len
-        bar = ProgressBar(expected_size=encoder_len, filled_char='=')
+        bar = ProgressBar(expected_size=encoder_len, filled_char=self.configuration_service.get('PROGRESS_FILING_CHAR'))
 
         def callback(monitor):
             bar.show(monitor.bytes_read)

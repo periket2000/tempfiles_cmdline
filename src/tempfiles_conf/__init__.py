@@ -1,5 +1,6 @@
 # Meta configuration values
 __UPLOAD_URL__ = 'https://tempfil.es/fileupload/'
+__PROGRESS_FILING_CHAR__ = '='
 
 # Messages
 __NO_MODE__ = 'No mode selected!'
