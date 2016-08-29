@@ -4,9 +4,11 @@ import requests
 import json
 import sys
 import tempfiles_conf.configuration as configuration
-from clint.textui.progress import Bar as ProgressBar
 from requests_toolbelt import MultipartEncoder, MultipartEncoderMonitor
+import click
 
+# Support vars.
+ENDL = "\n"
 usage = """
 \twhere options are:
 \t\t -u file_path => upload mode
@@ -15,15 +17,27 @@ usage = """
 
 
 class Executor:
+    """ Class for execute uploads/downloads to/from tempfil.es service. """
     def __init__(self):
         self.parser = optparse.OptionParser(usage='usage: %prog [options]'+usage)
         self.parser.add_option('-u', '--upload', action='store_true', default=False, help='upload mode')
         self.parser.add_option('-d', '--download', action='store_true', default=False, help='download mode')
+        self.parser.add_option('-v', '--version', action='store_true', default=False, help='version number')
         self.configuration_service = configuration.ConfigurationService()
         self.up_url = self.configuration_service.get('UPLOAD_URL')
+        self.prev_read = 0
+        self.block_size = 8192
+        self.file_type = 'text/plain'
 
     def run(self, args):
         (options, arguments) = self.parser.parse_args(args)
+
+        if options.version:
+            filepath = os.path.join(os.path.abspath(os.path.dirname(__file__)), "__init__.py")
+            conf = configuration.ConfigurationService(filepath=filepath)
+            print(conf.get('version'))
+            sys.exit(0)
+
         if not options.upload and not options.download:
             self.configuration_service.log('NO_MODE')
             self.parser.print_usage()
@@ -70,7 +84,7 @@ class Executor:
             callback = self.create_callback(encoder)
             monitor = MultipartEncoderMonitor(encoder, callback)
             r = requests.post(self.up_url, data=monitor, headers={'Content-Type': monitor.content_type})
-            print()
+            print(ENDL)
             print(json.loads(r.text))
         except requests.exceptions.ConnectionError:
             self.configuration_service.log('CONNECTION_CLOSED')
@@ -90,15 +104,18 @@ class Executor:
 
                 option = 'y'
                 if os.path.isfile(destination_file):
-                    option = input(self.configuration_service.get('OVERWRITE').format(destination_file))
-                if option == 'y':
+                    try:
+                        option = raw_input(self.configuration_service.get('OVERWRITE').format(destination_file))
+                    except NameError:
+                        option = input(self.configuration_service.get('OVERWRITE').format(destination_file))
+                if str(option) == 'y':
                     total_length = int(response.headers.get('content-length'))
-                    dl = 0
-                    with open(destination_file, 'wb') as handle:
-                        for block in response.iter_content(1024):
-                            handle.write(block)
-                            dl = self._progress(dl, block, total_length)
-                    print()
+                    with click.progressbar(length=total_length) as bar:
+                        with open(destination_file, 'wb') as handle:
+                            for block in response.iter_content(self.block_size):
+                                handle.write(block)
+                                bar.update(len(block))
+                    print(ENDL)
                     self.configuration_service.log('COMPLETE', (destination_file,))
             else:
                 self.configuration_service.log('NOT_FOUND')
@@ -110,23 +127,16 @@ class Executor:
             print(self.configuration_service.get('ALIEN'), sys.exc_info()[0])
             raise
 
-    def _progress(self, dl, block, total_length):
-        dl += len(block)
-        bar = ProgressBar(expected_size=total_length, filled_char=self.configuration_service.get('PROGRESS_FILING_CHAR'))
-        bar.show(dl)
-        return dl
-
     def create_callback(self, encoder):
-        encoder_len = encoder.len
-        bar = ProgressBar(expected_size=encoder_len, filled_char=self.configuration_service.get('PROGRESS_FILING_CHAR'))
+        bar = click.progressbar(length=encoder.len)
 
         def callback(monitor):
-            bar.show(monitor.bytes_read)
+            bar.update(monitor.bytes_read - self.prev_read)
+            self.prev_read = monitor.bytes_read
 
         return callback
 
-    @staticmethod
-    def create_upload(filepath):
+    def create_upload(self, filepath):
         return MultipartEncoder({
-            'file': (os.path.basename(filepath), open(filepath, 'rb'), 'text/plain')
+            'file': (os.path.basename(filepath), open(filepath, 'rb'), self.file_type)
             })

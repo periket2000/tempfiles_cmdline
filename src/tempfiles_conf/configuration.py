@@ -4,8 +4,11 @@ import re
 
 
 class ConfigurationService:
-    def __init__(self):
-        self.meta_info = os.path.join(os.path.abspath(os.path.dirname(__file__)), "__init__.py")
+    def __init__(self, filepath=None):
+        if filepath:
+            self.meta_info = filepath
+        else:
+            self.meta_info = os.path.join(os.path.abspath(os.path.dirname(__file__)), "__init__.py")
         self.meta_file = self.read()
 
     def get(self, key):

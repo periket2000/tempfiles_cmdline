@@ -23,7 +23,7 @@ CLASSIFIERS = [
 INSTALL_REQUIRES = [
     'requests>=2.11.1',
     'requests-toolbelt>=0.7.0',
-    'clint>=0.5.1',
+    'click>=6.6',
     'args>=0.1.0'
 ]
 
