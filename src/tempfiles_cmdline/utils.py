@@ -11,6 +11,7 @@ import click
 ENDL = "\n"
 usage = """
 \twhere options are:
+\t\t -v => show the tool's version
 \t\t -u file_path => upload mode
 \t\t -d download_link [destination_file_path] => download mode
 """
