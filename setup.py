@@ -23,10 +23,13 @@ CLASSIFIERS = [
 INSTALL_REQUIRES = [
     'requests>=2.11.1',
     'requests-toolbelt>=0.7.0',
-    'click>=6.6',
-    'args>=0.1.0'
+    'click>=6.6'
 ]
+TEST_REQUIRE = [
+    'pytest>=3.0.1',
+    'mock>=2.0.0'
 
+]
 ###################################################################
 
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -75,5 +78,6 @@ if __name__ == "__main__":
         zip_safe=False,
         classifiers=CLASSIFIERS,
         install_requires=INSTALL_REQUIRES,
+        tests_require=TEST_REQUIRE,
         scripts=['bin/tempfiles'],
     )

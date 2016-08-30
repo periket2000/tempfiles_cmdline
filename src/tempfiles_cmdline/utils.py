@@ -84,9 +84,10 @@ class Executor:
             encoder = self.create_upload(filepath)
             callback = self.create_callback(encoder)
             monitor = MultipartEncoderMonitor(encoder, callback)
-            r = requests.post(self.up_url, data=monitor, headers={'Content-Type': monitor.content_type})
+            response = requests.post(self.up_url, data=monitor, headers={'Content-Type': monitor.content_type})
             print(ENDL)
-            print(json.loads(r.text))
+            print(json.loads(response.text))
+            return response
         except requests.exceptions.ConnectionError:
             self.configuration_service.log('CONNECTION_CLOSED')
 
