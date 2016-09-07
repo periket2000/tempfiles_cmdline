@@ -1,4 +1,4 @@
-# [Tempfil.es] command line tool
+# [Tempfil.es] command line tool [![Build Status](https://travis-ci.org/periket2000/tempfiles_cmdline.svg?branch=master)](https://travis-ci.org/periket2000/tempfiles_cmdline)
 
 This tool is intended to provide command line access to the ephemeral/anonymous file sharing service [Tempfil.es].
 
