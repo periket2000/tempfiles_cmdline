@@ -33,6 +33,6 @@ class TestUtils:
         assert 'download_link' in r.text
 
     def test_download_err(self):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(IOError):
             executor.upload_file('bababa')
 
