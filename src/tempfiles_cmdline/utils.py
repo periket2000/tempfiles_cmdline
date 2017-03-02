@@ -81,10 +81,18 @@ class Executor:
 
     def upload_file(self, filepath):
         try:
-            encoder = self.create_upload(filepath)
+            # bypass multipart encoder / don't works with nginx direct upload.
+            # encoder = self.create_upload(filepath)
+            encoder = open(filepath, 'rb')
+            encoder.len = os.path.getsize(filepath)
             callback = self.create_callback(encoder)
             monitor = MultipartEncoderMonitor(encoder, callback)
-            response = requests.post(self.up_url, data=monitor, headers={'Content-Type': monitor.content_type})
+            response = requests.post(self.up_url,
+                                     data=monitor,
+                                     headers={
+                                         # 'Content-Type': monitor.content_type,
+                                         'X-NAME': os.path.basename(filepath)
+                                     })
             print(ENDL)
             print(json.loads(response.text))
             return response
