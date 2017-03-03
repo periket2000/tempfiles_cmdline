@@ -84,7 +84,18 @@ class Executor:
             # bypass multipart encoder / don't works with nginx direct upload.
             # encoder = self.create_upload(filepath)
             encoder = open(filepath, 'rb')
-            encoder.len = os.path.getsize(filepath)
+            try:
+                encoder.len = os.path.getsize(filepath)
+            except AttributeError:
+                # supporting python 2.7 trick for adding len to file stream
+                class Wrapped(object):
+                    def __init__(self, enc, path):
+                        self._enc = enc
+                        self.len = os.path.getsize(path)
+
+                    def __getattr__(self, attr):
+                        return getattr(self._enc, attr)
+                encoder = Wrapped(encoder, filepath)
             callback = self.create_callback(encoder)
             monitor = MultipartEncoderMonitor(encoder, callback)
             response = requests.post(self.up_url,
