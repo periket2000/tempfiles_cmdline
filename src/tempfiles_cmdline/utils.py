@@ -114,7 +114,7 @@ class Executor:
         try:
             response = requests.get(link, stream=True)
             if 'content-disposition' in response.headers:
-                filename = response.headers['content-disposition'].split("\"")[1]
+                filename = response.headers['content-disposition'].split("=", 1)[1]
 
                 if destination and is_directory:
                     destination_file = destination + '/' + filename
@@ -144,6 +144,7 @@ class Executor:
             self.configuration_service.log('BAD_URL')
         except requests.exceptions.ConnectionError:
             self.configuration_service.log('SERVER_KO')
+            raise
         except:
             print(self.configuration_service.get('ALIEN'), sys.exc_info()[0])
             raise
