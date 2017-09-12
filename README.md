@@ -7,6 +7,12 @@ This tool is intended to provide command line access to the ephemeral/anonymous 
 python setup.py install
 ```
 
+### Uninstall the package locally
+```python
+python setup.py install --record files.txt
+cat files.txt | xargs rm -rf
+```
+
 ### Installing the package with Pypi
 ```python
 pip install tempfiles_cmdline
