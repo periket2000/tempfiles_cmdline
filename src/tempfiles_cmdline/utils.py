@@ -113,7 +113,7 @@ class Executor:
 
     def download_file(self, link, destination=None, is_directory=False):
         try:
-            response = requests.get(link, stream=True)
+            response = requests.get(link, verify=False, stream=True)
             if 'content-disposition' in response.headers:
                 filename = response.headers['content-disposition'].split("=", 1)[1]
 
