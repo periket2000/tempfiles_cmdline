@@ -99,6 +99,7 @@ class Executor:
             callback = self.create_callback(encoder)
             monitor = MultipartEncoderMonitor(encoder, callback)
             response = requests.post(self.up_url,
+                                     verify=False,
                                      data=monitor,
                                      headers={
                                          # 'Content-Type': monitor.content_type,
