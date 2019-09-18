@@ -149,7 +149,7 @@ class Executor:
                 print(e)
             print(ENDL)
             print(download_link)
-            return download_link
+            return response
         except requests.exceptions.ConnectionError:
             self.configuration_service.log('CONNECTION_CLOSED')
 
