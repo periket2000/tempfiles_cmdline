@@ -1,5 +1,6 @@
 # Meta configuration values
 __UPLOAD_URL__ = 'https://tempfil.es/fileupload/'
+__FINISH_URL__ = 'https://tempfil.es/finish/'
 __PROGRESS_FILING_CHAR__ = '='
 
 # Messages
