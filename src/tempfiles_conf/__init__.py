@@ -1,19 +1,30 @@
-# Meta configuration values
-__UPLOAD_URL__ = 'https://tempfil.es/fileupload/'
-__FINISH_URL__ = 'https://tempfil.es/finish/'
-__PROGRESS_FILING_CHAR__ = '='
+from dataclasses import dataclass
+from typing import Optional
 
-# Messages
-__NO_MODE__ = 'No mode selected!'
-__NO_FILE_GIVEN__ = 'No file to upload given!'
-__UPLOADING__ = 'Uploading {0} to https://tempfil.es'
-__FILE_NOT_FOUND__ = 'File {0} not found!'
-__NO_DOWNLOAD_LINK__ = 'No link to download given!'
-__INVALID_DESTINATION__ = 'Invalid destination path given!'
-__CONNECTION_CLOSED__ = 'Server closed the connection, maybe the file is too large or the network speed too slow'
-__OVERWRITE__ = 'File {0} exists, overwrite? (y/n): '
-__COMPLETE__ = 'Download of {0} complete!'
-__NOT_FOUND__ = 'File not found!'
-__BAD_URL__ = 'Bad url provided!'
-__SERVER_KO__ = 'Failed to establish a connection with the server!'
-__ALIEN__ = 'Unexpected error:'
+
+@dataclass(frozen=True)
+class Config:
+    UPLOAD_URL: str = 'https://tempfil.es/fileupload/'
+    FINISH_URL: str = 'https://tempfil.es/finish/'
+    VERSION: str = '2.0.0'
+
+    NO_MODE: str = 'No mode selected!'
+    NO_FILE_GIVEN: str = 'No file to upload given!'
+    UPLOADING: str = 'Uploading {} to https://tempfil.es'
+    FILE_NOT_FOUND: str = 'File {} not found!'
+    NO_DOWNLOAD_LINK: str = 'No link to download given!'
+    INVALID_DESTINATION: str = 'Invalid destination path given!'
+    CONNECTION_CLOSED: str = 'Server closed the connection, maybe the file is too large or the network speed too slow'
+    OVERWRITE: str = 'File {} exists, overwrite? (y/n): '
+    COMPLETE: str = 'Download of {} complete!'
+    NOT_FOUND: str = 'File not found!'
+    BAD_URL: str = 'Bad url provided!'
+    SERVER_KO: str = 'Failed to establish a connection with the server!'
+    ALIEN: str = 'Unexpected error:'
+
+
+def log(msg: str, *args: Optional[str]) -> None:
+    if args:
+        print(msg.format(*args))
+    else:
+        print(msg)

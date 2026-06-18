@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tempfiles_cmdline"
+version = "2.0.0"
+description = "Tempfil.es ephemeral/anonymous file sharing service command line tool"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+keywords = ["ephemeral file sharing", "anonymous file sharing", "devops", "sysadmin"]
+authors = [
+    { name = "Marco Antonio Albero Albero", email = "marco@mybi.es" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "requests>=2.31.0",
+    "requests-toolbelt>=1.0.0",
+    "click>=8.0",
+]
+
+[project.urls]
+Homepage = "https://tempfil.es"
+
+[project.scripts]
+tempfiles = "tempfiles_cmdline.utils:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

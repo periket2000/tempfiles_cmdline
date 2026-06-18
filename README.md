@@ -1,52 +1,40 @@
-# [Tempfil.es] command line tool [![Build Status](https://travis-ci.org/periket2000/tempfiles_cmdline.svg?branch=master)](https://travis-ci.org/periket2000/tempfiles_cmdline)
+# Tempfil.es command line tool
 
 This tool is intended to provide command line access to the ephemeral/anonymous file sharing service [Tempfil.es].
 
-### Installing the package locally
-```python
-python setup.py install
-```
+## Installation
 
-### Uninstall the package locally
-```python
-python setup.py install --record files.txt
-cat files.txt | xargs rm -rf
-```
-
-### Installing the package with Pypi
-```python
+```bash
 pip install tempfiles_cmdline
 ```
 
-### Executable inteface
-
-After install the command line tool, you'll get a "tempfiles" comman line tool ready to run.
-
-> usage
+Or install from source:
 
 ```bash
-$ tempfiles
-No mode selected!
-Usage: tempfiles [options]
-
-	where options are:
-		 -u file_path => upload mode
-		 -d download_link [destination_path] => download mode
+pip install -e .
 ```
 
-> uploading a file
+## Usage
 
+```
+tempfiles -u file_path       upload mode
+tempfiles -d URL [DEST]      download mode
+tempfiles -v                 show version
+```
+
+### Examples
+
+Upload a file:
 ```bash
 $ tempfiles -u ~/myfile.zip
-Uploading "~/myfile.zip" to https://tempfil.es
+Uploading myfile.zip to https://tempfil.es
 [{'download_link': 'https://tempfil.es/filedownload/link.cZIByw'}]
 ```
 
-> download a file
-
+Download a file:
 ```bash
 $ tempfiles -d https://tempfil.es/filedownload/link.cZIByw
 Download of "myfile.zip" complete!
 ```
 
-[Tempfil.es]: <https://tempfil.es>
+[Tempfil.es]: https://tempfil.es
