@@ -1,4 +1,4 @@
-# Tempfil.es command line tool
+# Tempfil.es command line tool [![CI](https://github.com/periket2000/tempfiles_cmdline/actions/workflows/ci.yml/badge.svg)](https://github.com/periket2000/tempfiles_cmdline/actions/workflows/ci.yml)
 
 This tool is intended to provide command line access to the ephemeral/anonymous file sharing service [Tempfil.es].
 
