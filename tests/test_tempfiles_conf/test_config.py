@@ -7,7 +7,7 @@ class TestConfig:
         cfg = Config()
         assert cfg.UPLOAD_URL == 'https://tempfil.es/fileupload/'
         assert cfg.FINISH_URL == 'https://tempfil.es/finish/'
-        assert cfg.VERSION == '1.1.3'
+        assert cfg.VERSION == '2.0.0'
 
     def test_log_no_args(self, capsys):
         log('hello world')
